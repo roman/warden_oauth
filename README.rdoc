@@ -1,6 +1,6 @@
 = warden_oauth
 
-Description goes here.
+TODO README
 
 == Note on Patches/Pull Requests
  

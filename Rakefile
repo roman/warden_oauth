@@ -5,8 +5,11 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "warden_oauth"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{OAuth Strategy generator for Warden Authentication Framework}
+    gem.description = %Q{ 
+      warden_oauth will help you create oauth authentication strategies using the oauth
+      helper method on the Warden::Manager config setup
+    }
     gem.email = "romanandreg@gmail.com"
     gem.homepage = "http://github.com/roman/warden_oauth"
     gem.authors = ["Roman Gonzalez"]
