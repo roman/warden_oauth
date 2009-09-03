@@ -11,8 +11,12 @@ begin
     gem.homepage = "http://github.com/roman/warden_oauth"
     gem.authors = ["Roman Gonzalez"]
     gem.rubyforge_project = "warden_oauth"
-    gem.add_development_dependency "rspec"
-    gem.add_development_dependency "yard"
+    gem.add_dependency('warden')
+    gem.add_dependency('oauth')
+    gem.add_development_dependency("rack-test")
+    gem.add_development_dependency("fakeweb")
+    gem.add_development_dependency("rspec")
+    gem.add_development_dependency("yard")
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::RubyforgeTasks.new do |rubyforge|
