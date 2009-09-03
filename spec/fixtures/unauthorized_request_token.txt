@@ -1,0 +1,1 @@
+oauth_token=SylltB94pocC6hex8kr9&oauth_token_secret=WkU0NDgdOlKeB7arFWJyAQjlaVZEEcH0lhdy1kFs&oauth_callback_confirmed=true
