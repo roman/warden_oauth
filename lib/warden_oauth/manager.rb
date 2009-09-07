@@ -9,11 +9,16 @@ module Warden
 
       def oauth(service, &block)
         config = Warden::OAuth::Config.new
-        yield config
+        if block_given?
+          if block.arity == 1 
+            yield config 
+          else
+            config.instance_eval(&block)
+          end
+        end
         config.check_requirements
         config.provider_name = service
         Warden::OAuth::Strategy.build(service, config)
-        #@config[:oauth_services][service] = config
       end
 
       module ClassMethods
