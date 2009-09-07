@@ -60,7 +60,7 @@ module Warden
           elsif !stored_token_match_recieved_token?
             fail!("Received OAuth token didn't match stored OAuth token")
           else
-            user = Warden::Manager.find_user_by_access_token(access_token)
+            user = Warden::Manager.find_user_by_access_token(config.provider_name , access_token)
             if user.nil?
               fail!("User with access token not found")
               throw(:warden, :oauth => { :access_token => access_token })

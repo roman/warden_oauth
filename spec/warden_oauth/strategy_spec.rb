@@ -76,7 +76,7 @@ describe Warden::OAuth::Strategy do
       end
 
       before(:each) do
-        Warden::Manager.access_token_user_finder do |access_token|
+        Warden::Manager.access_token_user_finder(:example) do |access_token|
           Object.new if access_token.token == 'ABC' && access_token.secret == '123' 
         end
         FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
