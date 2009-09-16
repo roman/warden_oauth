@@ -3,16 +3,36 @@ module Warden
 
     class Strategy < Warden::Strategies::Base
 
-      ###################################
-      ### Setup and Subclass Creation ###
-      ###################################
+      ############################################
+      ### section: Setup and Subclass Creation ###
+      ############################################
 
+      #
+      # Manages the creation and registration of the OAuth strategy specified
+      # on the keyword
+      #
+      # @param [Symbol] name of the oauth service
+      # @param [Walruz::Config] configuration specified on the declaration of the oauth service
+      #
       def self.build(keyword, config)
         strategy_class = self.create_oauth_strategy_class(keyword)
         self.register_oauth_strategy_class(keyword, strategy_class)
         self.set_oauth_service_info(strategy_class, config)
       end
 
+      #
+      # Creates the OAuth Strategy class from the keyword specified on the declaration of the 
+      # oauth service. This class will be namespaced inside Warden::OAuth::Strategy
+      #
+      # @param [Symbol] name of the OAuth service 
+      # @return [Class] The class representing the Warden strategy
+      #
+      # @example
+      # 
+      #   self.create_oauth_strategy_class(:twitter) #=> Warden::OAuth::Strategy::Twitter
+      #   # will create a class Warden::OAuth::Strategy::Twitter that extends from 
+      #   # Warden::OAuth::Strategy
+      #
       def self.create_oauth_strategy_class(keyword)
         class_name = Warden::OAuth::Utils.camelize(keyword.to_s) 
         if self.const_defined?(class_name)
@@ -22,6 +42,15 @@ module Warden
         end
       end
 
+      #
+      # Registers the generated OAuth Strategy in the Warden::Strategies collection, the label
+      # of the strategy will be the given oauth service name plus an '_oauth' postfix
+      #
+      # @param [Symbol] name of the OAuth service
+      #
+      # @example
+      #   manager.oauth(:twitter) { |twitter| ... } # will register a strategy :twitter_oauth
+      #
       def self.register_oauth_strategy_class(keyword, strategy_class)
         keyword_name = "%s_oauth" % keyword.to_s
         if Warden::Strategies[keyword_name.to_sym].nil?
@@ -29,6 +58,13 @@ module Warden
         end
       end
 
+      #
+      # Defines a CONFIG constant in the generated class that will hold the configuration information 
+      # (consumer_token, consumer_secret and options) of the oauth service.
+      #
+      # @param [Class] strategy class that will hold the configuration info
+      # @param [Warden::OAuth::Config] configuration info of the oauth service
+      #
       def self.set_oauth_service_info(strategy_class, config)
         strategy_class.const_set("CONFIG", config) unless strategy_class.const_defined?("CONFIG")
       end
@@ -43,11 +79,29 @@ module Warden
       ### Strategy Logic ###
       ######################
 
+      #
+      # An OAuth strategy will be valid to execute if:
+      # * A 'warden_oauth_provider' parameter is given, with the name of the OAuth service
+      # * A 'oauth_token' is being receive on the request (response from an OAuth provider)
+      #
       def valid?
         (params.include?('warden_oauth_provider') &&  params['warden_oauth_provider'] == config.provider_name.to_s) ||
           params.include?('oauth_token') 
       end
 
+
+      #
+      # Manages the OAuth authentication process, there can be 3 outcomes from this Strategy:
+      # 1. The OAuth credentials are invalid and the FailureApp is called
+      # 2. The OAuth credentials are valid, but there is no user associated to them. In this case
+      #    the FailureApp is called, but the env['warden.options'][:oauth][:access_token] will be 
+      #    available.
+      # 3. The OAuth credentials are valid, and the user is authenticated successfuly
+      #
+      # @note
+      # If you want to signup users with the twitter credentials, you can manage the creation of a new 
+      # user in the FailureApp with the given access_token
+      #
       def authenticate!
         if params.include?('warden_oauth_provider')
           store_request_token_on_session
