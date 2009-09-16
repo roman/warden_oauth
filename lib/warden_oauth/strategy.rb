@@ -126,7 +126,7 @@ module Warden
 
       end
 
-      def fail!(msg)
+      def fail!(msg) #:nodoc:
         self.errors.add(service_param_name.to_sym, msg)
         super
       end

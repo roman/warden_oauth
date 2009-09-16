@@ -1,9 +1,14 @@
 module Warden
   module OAuth
 
+    #
+    # Contains methods from Rails to avoid unnecessary dependencies
+    #
     module Utils
 
-      # Fetched from ActiveSupport to avoid dependencies
+      #
+      # Fetched from ActiveSupport::Inflector.camelize to avoid dependencies
+      #
       def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
         if first_letter_in_uppercase
           lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase }
@@ -12,6 +17,9 @@ module Warden
         end
       end
 
+      #
+      # Fetched from ActionController::Request to avoid dependencies
+      #
       def host_with_port(request)
         url = request.scheme + "://"
         url << request.host

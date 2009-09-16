@@ -1,6 +1,9 @@
 module Warden
   module OAuth
-    
+  
+    #
+    # Holds all the information of the OAuth service.
+    #
     class Config
       attr_accessor :provider_name
       
