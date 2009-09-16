@@ -1,17 +1,56 @@
 = warden_oauth
 
-TODO README
+warden_oauth enhances the warden gem offering a simple interface for creating oauth strategies 
+on very simple steps.
+
+== Getting Started
+
+To get started you just have to require the warden_oauth libraries, and setup the 
+oauth services you would like to have on the <tt>Warden::Manager</tt> middleware declaration:
+
+<pre>
+<code class="ruby">
+Warden::Manager do |manager|
+  manager.failure_app = FailureApp
+  manager.oauth(:twitter) do |twitter|
+    twitter.consumer_secret = <YOUR CONSUMER SECRET>
+    twitter.consumer_token  = <YOUR CONSUMER TOKEN>
+    twitter.options :site => 'http://twitter.com'
+  end
+  manager.default_strategies(:twitter_oauth, :password, :other)
+end
+</code>
+</pre>
+
+== Giving an Access Token fetcher
+
+Users get identified on a system via an access_token and an access_secret, when a valid access_token is 
+recevied, warden_oauth calls a fetcher declared on <tt>Warden::Manager.access_token_user_finder</tt>. 
+
+<pre>
+<code class="ruby">
+Warden::Manager.access_token_user_finder(:twitter) do |access_token|
+  User.find_by_access_token_and_access_secret(access_token.token, access_token.secret)
+end
+</code>
+</pre>
+
+If a user is returned, then this is the user that is going to be authenticated in the session, otherwise the 
+<tt>FailureApp</tt> will be called, you may check the <tt>env['warden.options'][:oauth][:access_token]</tt> to check
+the original access_token and <em>create a new user</em> from there if desired. 
+
+== Strategy Class info
+
+When you declare an oauth strategy on the <tt>Warden::Manager</tt> initialization, (e.g. manager.oauth(:service_name))
+a <tt>Warden::OAuth::Strategy::ServiceName</tt> will be declared, at the same time this class will be registered as
+<tt>:service_name_oauth</tt> on the <tt>Warden::Strategies</tt>.
+
+So if we have a declaration like the one of the Getting Started section, we will have an Strategy class 
+called <tt>Warden::OAuth::Strategy::Twitter</tt>, and this will be registered as <tt>:twitter_oauth</tt>.
 
 == Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+
+For any error send an email to: romanandreg [at] gmail [dot] com
 
 == Copyright
 
