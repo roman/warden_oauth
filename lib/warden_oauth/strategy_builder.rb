@@ -61,7 +61,7 @@ module Warden
 
       #
       # Defines a CONFIG constant in the generated class that will hold the configuration information 
-      # (consumer_token, consumer_secret and options) of the oauth service.
+      # (consumer_key, consumer_secret and options) of the oauth service.
       #
       # @param [Class] strategy class that will hold the configuration info
       # @param [Warden::OAuth::Config] configuration info of the oauth service

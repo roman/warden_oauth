@@ -1,6 +1,10 @@
 module Warden
   module OAuth
 
+    #
+    # Holds all the main logic of the OAuth authentication, all the generated
+    # OAuth classes will extend from this class
+    #
     class Strategy < Warden::Strategies::Base
       extend StrategyBuilder
 
@@ -46,7 +50,7 @@ module Warden
             user = Warden::Manager.find_user_by_access_token(config.provider_name , access_token)
             if user.nil?
               fail!("User with access token not found")
-              throw(:warden, :oauth => { :access_token => access_token })
+              throw_error_with_oauth_info
             else
               success!(user)
             end
@@ -75,6 +79,19 @@ module Warden
 
       def access_token
         @access_token ||= request_token.get_access_token(:oauth_verifier => params['oauth_verifier'])
+      end
+
+      protected
+
+      def throw_error_with_oauth_info
+        throw(:warden, :oauth => { 
+          self.config.provider_name => {
+            :provider => config.provider_name,
+            :access_token => access_token,
+            :consumer_key => config.consumer_key,
+            :consumer_secret => config.consumer_secret
+          }
+        })
       end
 
       def store_request_token_on_session

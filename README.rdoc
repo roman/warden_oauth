@@ -12,7 +12,7 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
     manager.failure_app = FailureApp
     manager.oauth(:twitter) do |twitter|
       twitter.consumer_secret = <YOUR CONSUMER SECRET>
-      twitter.consumer_token  = <YOUR CONSUMER TOKEN>
+      twitter.consumer_key  = <YOUR CONSUMER KEY>
       twitter.options :site => 'http://twitter.com'
     end
     manager.default_strategies(:twitter_oauth, :password, :other)
