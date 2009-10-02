@@ -42,6 +42,7 @@ describe Warden::OAuth::Strategy do
       @request  = Rack::MockRequest.new($app)
     end
 
+
     describe "without warden_oauth_service nor oauth_token parameter" do
       
       before(:each) do
@@ -75,43 +76,65 @@ describe Warden::OAuth::Strategy do
         $app
       end
 
-      before(:each) do
-        Warden::Manager.access_token_user_finder(:example) do |access_token|
-          Object.new if access_token.token == 'ABC' && access_token.secret == '123' 
-        end
-        FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
-                             :body => fixture_response("unauthorized_request_token"))
-        get "/", 'warden_oauth_provider' => 'example'
-      end
-
-      describe "and the user is not found" do
+      describe "and the access_token_finder hasn't been declared" do
 
         before(:each) do
-          FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/access_token', 
-                               :body => 'oauth_token=ABD&oauth_token_secret=122')
-          get "/", 'oauth_token' => "SylltB94pocC6hex8kr9",
-                   'oauth_verifier' => "omPxEkKnnx9ygnu7dd6f"
-        end
-        
-        it "should invoke the fail app" do
-          last_response.body.should ==  "No user with the given access token"
+          FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
+                               :body => fixture_response("unauthorized_request_token"))
         end
 
-      end
-
-      describe "and the user is found" do
-
-        before(:each) do
+        it "should raise an exception saying that the access_token_finder is not declared" do
+          get "/", 'warden_oauth_provider' => 'example'
           FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/access_token', 
                                :body => 'oauth_token=ABC&oauth_token_secret=123')
-          get "/", 'oauth_token' => "SylltB94pocC6hex8kr9",
-                   'oauth_verifier' => "omPxEkKnnx9ygnu7dd6f"
-        end
-        
-        it "should go to the desired app" do
-          last_response.body.should == "Welcome" 
+          lambda do
+            get "/", 'oauth_token' => "SylltB94pocC6hex8kr9",
+                     'oauth_verifier' => "omPxEkKnnx9ygnu7dd6f"
+          end.should raise_error(RuntimeError, /strategy/)
         end
 
+      end
+      
+      describe "and the access_token_finder has been declared" do
+
+        before(:each) do
+          Warden::Strategies[:example_oauth].access_token_user_finder do |access_token|
+            Object.new if access_token.token == 'ABC' && access_token.secret == '123' 
+          end
+          FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
+                               :body => fixture_response("unauthorized_request_token"))
+          get "/", 'warden_oauth_provider' => 'example'
+        end
+
+        describe "and the user is not found" do
+
+          before(:each) do
+            FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/access_token', 
+                                 :body => 'oauth_token=ABD&oauth_token_secret=122')
+            get "/", 'oauth_token' => "SylltB94pocC6hex8kr9",
+                   'oauth_verifier' => "omPxEkKnnx9ygnu7dd6f"
+          end
+
+          it "should invoke the fail app" do
+            last_response.body.should ==  "No user with the given access token"
+          end
+
+        end
+
+        describe "and the user is found" do
+
+          before(:each) do
+            FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/access_token', 
+                                 :body => 'oauth_token=ABC&oauth_token_secret=123')
+            get "/", 'oauth_token' => "SylltB94pocC6hex8kr9",
+                   'oauth_verifier' => "omPxEkKnnx9ygnu7dd6f"
+          end
+
+          it "should go to the desired app" do
+            last_response.body.should == "Welcome" 
+          end
+
+        end
       end
 
     end

@@ -8,6 +8,18 @@ module Warden
     module StrategyBuilder
       extend self
 
+
+      #
+      # Defines the user finder from the access_token for the strategy, receives a block
+      # that will be invoked each time you want to find an user via an access_token in your
+      # system.
+      #
+      # @param blk Block that recieves the access_token as a parameter and will return a user or nil
+      # 
+      def access_token_user_finder(&blk)
+        define_method(:_find_user_by_access_token, &blk)
+      end
+
       #
       # Manages the creation and registration of the OAuth strategy specified
       # on the keyword

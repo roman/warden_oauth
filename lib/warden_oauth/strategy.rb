@@ -47,7 +47,7 @@ module Warden
           elsif !stored_token_match_recieved_token?
             fail!("Received OAuth token didn't match stored OAuth token")
           else
-            user = Warden::Manager.find_user_by_access_token(config.provider_name , access_token)
+            user = find_user_by_access_token(access_token)
             if user.nil?
               fail!("User with access token not found")
               throw_error_with_oauth_info
@@ -82,6 +82,19 @@ module Warden
       end
 
       protected
+
+      def find_user_by_access_token(access_token)
+        raise RuntimeError.new(<<-ERROR_MESSAGE) unless self.respond_to?(:_find_user_by_access_token)
+        
+You need to define a finder by access_token for this strategy.
+Write on the warden initializer the following code:
+Warden::Strategies[:#{config.provider_name}_oauth].access_token_user_finder do |access_token|
+  # Logic to get your user from an access_token
+end
+
+ERROR_MESSAGE
+        self._find_user_by_access_token(access_token)
+      end
 
       def throw_error_with_oauth_info
         throw(:warden, :oauth => { 

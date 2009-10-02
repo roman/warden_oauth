@@ -1,2 +1,6 @@
+* 0.0.2 (Oct 1, 2009) Keep the manager out of the business of strategies
+* Removing the access_token_user_finder from Warden::Manager and adding it to
+the Warden::StrategyBuilder module
+
 * 0.0.1 (Sep 16, 2009) The beginning of easy OAuth for Warden
 * Adding the initial implementation of the warden_oauth gem

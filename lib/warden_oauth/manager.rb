@@ -7,10 +7,6 @@ module Warden
     #
     module Manager
 
-      def self.included(base) #:nodoc:
-        base.extend(ClassMethods)
-      end
-
       #
       # Helps to setup a new OAuth client authentication, to get started you need to define
       # a service name, and then on the block assign the different values required in order
@@ -37,31 +33,6 @@ module Warden
         config.check_requirements
         config.provider_name = service
         Warden::OAuth::Strategy.build(service, config)
-      end
-
-      module ClassMethods
-
-        #
-        # Assigns a block that handles how to find a User given an access_token.
-        # @param [Symbol] oauth_service The identifier specified on Warden::Manager.oauth
-        # 
-        # @example
-        #   Warden::Manager.access_token_user_finder(:twitter) do |access_token|
-        #     # Find user with access_token
-        #   end
-        #
-        def access_token_user_finder(oauth_service, &block)
-          raise Warden::OAuth::AccessTokenFinderMissing.new("You need to specify a block for Warden::Manager.acess_token_user_finder") unless block_given?
-          raise Warden::OAuth::AccessTokenFinderMissing.new("You need to specify a block for Warden::Manager.access_token_user_finder, this must receive one parameter") if block.arity != 1
-          @find_user_by_access_token ||= {}
-          @find_user_by_access_token[oauth_service] = block
-        end
-
-        def find_user_by_access_token(oauth_service, access_token) #:nodoc:
-          raise Warden::OAuth::AccessTokenFinderMissing.new("You need to specify a block for Warden::Manager.acess_token_user_finder") if @find_user_by_access_token.nil?
-          @find_user_by_access_token[oauth_service].call(access_token)
-        end
-
       end
     
     end
