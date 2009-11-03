@@ -21,9 +21,9 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
 == Giving an Access Token fetcher
 
 Users get identified on a system via an access_token and an access_secret, when a valid access_token is 
-recevied, warden_oauth calls a fetcher declared on <tt>Warden::Manager.access_token_user_finder</tt>. 
+recevied, warden_oauth calls a fetcher declared on <tt>Warden::Strategies[:<strategy_key>_oauth].access_token_user_finder</tt>. 
 
-  Warden::Manager.access_token_user_finder(:twitter) do |access_token|
+  Warden::Strategies[:twitter_oauth].access_token_user_finder do |access_token|
     User.find_by_access_token_and_access_secret(access_token.token, access_token.secret)
   end
 
@@ -50,6 +50,11 @@ url.
 In Rails:
   
   link_to 'Twitter Authentication', url_for(login_path(:warden_oauth_provider => 'twitter'))
+
+Note:
+
+Don't set the <tt>:warden_oauth_provider</tt> parameter as part of the login route, if you do this rails will catch the parameter, but not the
+warden rack middleware, ergo, it won't work as expected.
 
 == Note on Patches/Pull Requests
 
