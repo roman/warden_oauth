@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Roman Gonzalez"]
-  s.date = %q{2009-09-16}
+  s.date = %q{2009-11-02}
   s.description = %q{ 
       warden_oauth will help you create oauth authentication strategies using the oauth
       helper method on the Warden::Manager config setup
@@ -40,7 +40,8 @@ Gem::Specification.new do |s|
      "spec/fixtures/unauthorized_request_token.txt",
      "spec/spec_helper.rb",
      "spec/warden_oauth/manager_spec.rb",
-     "spec/warden_oauth/strategy_spec.rb"
+     "spec/warden_oauth/strategy_spec.rb",
+     "warden_oauth.gemspec"
   ]
   s.homepage = %q{http://github.com/roman/warden_oauth}
   s.rdoc_options = ["--charset=UTF-8"]
