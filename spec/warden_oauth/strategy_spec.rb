@@ -60,8 +60,8 @@ describe Warden::OAuth::Strategy do
       before(:each) do
         FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
                              :body => fixture_response("unauthorized_request_token"))
-        @response = @request.get("/", :input => 'warden_oauth_provider=example')
-      end
+        @response = @request.get("/", :params => { 'warden_oauth_provider' => 'example' })
+      end 
 
       it "should redirect to the authorize url" do
         @response.headers['Location'].should =~ %r"http://localhost:3000/oauth/authorize"
@@ -76,7 +76,12 @@ describe Warden::OAuth::Strategy do
         $app
       end
 
-      describe "and the access_token_finder hasn't been declared" do
+      before(:each) do
+        Warden::Strategies.clear!
+        Warden::OAuth::Strategy.send(:remove_const, "Example") if Warden::OAuth::Strategy.const_defined?("Example")
+      end
+
+      describe "and the access_token_user_finder hasn't been declared" do
 
         before(:each) do
           FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
@@ -95,9 +100,10 @@ describe Warden::OAuth::Strategy do
 
       end
       
-      describe "and the access_token_finder has been declared" do
+      describe "and the access_token_user_finder has been declared" do
 
         before(:each) do
+          get "/initialize_strategies"
           Warden::Strategies[:example_oauth].access_token_user_finder do |access_token|
             Object.new if access_token.token == 'ABC' && access_token.secret == '123' 
           end

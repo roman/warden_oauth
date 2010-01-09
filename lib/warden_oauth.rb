@@ -12,7 +12,7 @@ module Warden
     autoload :StrategyBuilder, base_path + '/strategy_builder'
     autoload :Strategy,        base_path + '/strategy'
     autoload :Config,          base_path + "/config"
-    require base_path + "/manager"
+    require base_path + "/config_extension"
     
 
   end

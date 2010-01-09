@@ -2,10 +2,10 @@ module Warden
   module OAuth
 
     #
-    # Holds all the extensions made to Warden::Manager in order to create OAuth
+    # Holds all the extensions made to Warden::Config in order to create OAuth
     # consumers.
     #
-    module Manager
+    module ConfigExtension
 
       #
       # Helps to setup a new OAuth client authentication, to get started you need to define
@@ -14,11 +14,12 @@ module Warden
       # @param [Symbol] service An identifier of the OAuth service
       # 
       # @example
-      #
-      #   Warden::Manager.oauth(:twitter) do
-      #     consumer_key "<YOUR CONSUMER KEY>"
-      #     consumer_secret "<YOUR CONSUMER SECRET>"
-      #     options :site => 'http://twitter.com'
+      #   use Warden::Manager do |config|
+      #     config.oauth(:twitter) do
+      #       consumer_key "<YOUR CONSUMER KEY>"
+      #       consumer_secret "<YOUR CONSUMER SECRET>"
+      #       options :site => 'http://twitter.com'
+      #     end
       #   end
       #
       def oauth(service, &block)
@@ -40,4 +41,5 @@ module Warden
   end
 end
 
-Warden::Manager.send(:include, Warden::OAuth::Manager)
+Warden::Config.send(:include, Warden::OAuth::ConfigExtension)
+
