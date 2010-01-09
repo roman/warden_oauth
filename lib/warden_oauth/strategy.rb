@@ -12,6 +12,11 @@ module Warden
       ### Strategy Logic ###
       ######################
 
+
+      def self.access_token_user_finders
+        (@_user_token_finders ||= {})
+      end
+
       #
       # An OAuth strategy will be valid to execute if:
       # * A 'warden_oauth_provider' parameter is given, with the name of the OAuth service
@@ -88,7 +93,7 @@ module Warden
         
 You need to define a finder by access_token for this strategy.
 Write on the warden initializer the following code:
-Warden::Strategies[:#{config.provider_name}_oauth].access_token_user_finder do |access_token|
+Warden::OAuth.access_token_user_finder(:#{config.provider_name}) do |access_token|
   # Logic to get your user from an access_token
 end
 

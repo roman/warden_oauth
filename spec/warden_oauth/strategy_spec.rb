@@ -103,13 +103,16 @@ describe Warden::OAuth::Strategy do
       describe "and the access_token_user_finder has been declared" do
 
         before(:each) do
-          get "/initialize_strategies"
-          Warden::Strategies[:example_oauth].access_token_user_finder do |access_token|
+          Warden::OAuth.access_token_user_finder(:example) do |access_token|
             Object.new if access_token.token == 'ABC' && access_token.secret == '123' 
           end
           FakeWeb.register_uri(:post, 'http://localhost:3000/oauth/request_token', 
                                :body => fixture_response("unauthorized_request_token"))
           get "/", 'warden_oauth_provider' => 'example'
+        end
+
+        after(:each) do
+          Warden::OAuth.clear_access_token_user_finders
         end
 
         describe "and the user is not found" do

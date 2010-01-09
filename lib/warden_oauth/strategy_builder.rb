@@ -31,6 +31,10 @@ module Warden
         strategy_class = self.create_oauth_strategy_class(keyword)
         self.register_oauth_strategy_class(keyword, strategy_class)
         self.set_oauth_service_info(strategy_class, config)
+        # adding the access_token_user_finder to the strategy
+        if self.access_token_user_finders.include?(keyword)
+          strategy_class.access_token_user_finder(&self.access_token_user_finders[keyword])
+        end
       end
 
       #

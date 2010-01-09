@@ -7,6 +7,7 @@ module Warden
 
     base_path = File.dirname(__FILE__) + "/warden_oauth"
     
+    require base_path + "/base"
     require base_path + "/errors"
     autoload :Utils,           base_path + '/utils'
     autoload :StrategyBuilder, base_path + '/strategy_builder'
