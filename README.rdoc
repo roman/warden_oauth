@@ -8,42 +8,42 @@ oauth strategies.
 To get started you just have to require the warden_oauth libraries, and setup the 
 oauth services you would like to have on the <tt>Warden::Manager</tt> middleware declaration:
 
-  Warden::Manager do |manager|
-    manager.failure_app = FailureApp
-    manager.oauth(:twitter) do |twitter|
+  Warden::Manager do |config|
+    config.failure_app = FailureApp
+    config.oauth(:twitter) do |twitter|
       twitter.consumer_secret = <YOUR CONSUMER SECRET>
       twitter.consumer_key  = <YOUR CONSUMER KEY>
       twitter.options :site => 'http://twitter.com'
     end
-    manager.default_strategies(:twitter_oauth, :password, :other)
+    config.default_strategies(:twitter_oauth, :password, :other)
   end
 
 == Giving an Access Token fetcher
 
 Users get identified on a system via an access_token and an access_secret, when a valid access_token is 
-recevied, warden_oauth calls a fetcher declared on <tt>Warden::Strategies[:<strategy_key>_oauth].access_token_user_finder</tt>. 
+recevied, warden_oauth calls a fetcher declared on <tt>Warden::OAuth.access_token_user_finder(:<strategy_key>)</tt>. 
 
-  Warden::Strategies[:twitter_oauth].access_token_user_finder do |access_token|
+  Warden::OAuth.access_token_user_finder(:twitter) do |access_token|
     User.find_by_access_token_and_access_secret(access_token.token, access_token.secret)
   end
 
 If a user is returned, then this is the user that is going to be authenticated in the session, otherwise the 
 <tt>FailureApp</tt> will be called, you may check the <tt>env['warden.options'][:oauth][:access_token]</tt> to check
-the original access_token and <em>create a new user</em> from there if desired. 
+the original access_token and <bold>create a new user</bold> from there if desired. 
 
 == Strategy Class info
 
-When you declare an oauth strategy on the <tt>Warden::Manager</tt> initialization, (e.g. manager.oauth(:service_name))
+When you declare an oauth strategy on the <tt>Warden::Config</tt> initialization, (e.g. config.oauth(:service_name))
 a <tt>Warden::OAuth::Strategy::ServiceName</tt> will be declared, at the same time this class will be registered as
 <tt>:service_name_oauth</tt> on the <tt>Warden::Strategies</tt>.
 
-So if we have a declaration like the one of the Getting Started section, we will have an Strategy class 
-called <tt>Warden::OAuth::Strategy::Twitter</tt>, and this will be registered as <tt>:twitter_oauth</tt>.
+So when we have a declaration like the one we have in the Getting Started section, we will have an Strategy class 
+called <tt>Warden::OAuth::Strategy::Twitter</tt>, and this will be registered as <tt>:twitter_oauth</tt> on the Warden::Strategies.
 
 == Running the Strategy
 
 In order to get the strategy running in the app, you have to specify a parameter called warden_oauth_provider
-with the name of the oauth service you want to start. So for example, if you would like to boot the twitter
+with the name of the oauth service you want to use. So for example, if you would like to boot the twitter
 oauth example given on the "Getting Started" section you just have to specify the parameter on a protected
 url.
 
@@ -51,10 +51,20 @@ In Rails:
   
   link_to 'Twitter Authentication', url_for(login_path(:warden_oauth_provider => 'twitter'))
 
+There can be 3 different outcomes from this strategy:
+
+1. The OAuth credentials are invalid and the FailureApp is called.
+2. The OAuth credentials are valid, but there is no user associated to them. In this case the FailureApp is called, but the env['warden.options'][:oauth][:access_token] will be = Note on Patches/Pull Requests available.
+3. The OAuth credentials are valid, and the user is authenticated successfuly. 
+
 Note:
 
-Don't set the <tt>:warden_oauth_provider</tt> parameter as part of the login route, if you do this rails will catch the parameter, but not the
+In Rails, don't set the <tt>:warden_oauth_provider</tt> parameter as part of the login route, if you do this, rails will catch the parameter, but not the
 warden rack middleware, ergo, it won't work as expected.
+
+== Examples
+
+If you want to know how to make a twitter authentication client, check examples/twitter/application.rb
 
 == Note on Patches/Pull Requests
 
