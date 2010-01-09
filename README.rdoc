@@ -54,7 +54,7 @@ In Rails:
 There can be 3 different outcomes from this strategy:
 
 1. The OAuth credentials are invalid and the FailureApp is called.
-2. The OAuth credentials are valid, but there is no user associated to them. In this case the FailureApp is called, but the env['warden.options'][:oauth][:access_token] will be = Note on Patches/Pull Requests available.
+2. The OAuth credentials are valid, but there is no user associated to them. In this case the FailureApp is called, but the env['warden.options'][:oauth][:access_token] will be available.
 3. The OAuth credentials are valid, and the user is authenticated successfuly. 
 
 Note:
