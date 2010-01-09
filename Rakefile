@@ -14,7 +14,7 @@ begin
     gem.homepage = "http://github.com/roman/warden_oauth"
     gem.authors = ["Roman Gonzalez"]
     gem.rubyforge_project = "warden_oauth"
-    gem.add_dependency('warden')
+    gem.add_dependency('warden', ">= 0.8.1")
     gem.add_dependency('oauth')
     gem.add_development_dependency("rack-test")
     gem.add_development_dependency("fakeweb")
@@ -29,8 +29,10 @@ end
 
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
+  root = File.dirname(__FILE__)
   spec.libs << 'lib' << 'spec'
   spec.spec_files = FileList['spec/**/*_spec.rb']
+  spec.spec_opts = ['--options', "#{root}/spec/spec.opts"]
 end
 
 Spec::Rake::SpecTask.new(:rcov) do |spec|
