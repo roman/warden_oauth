@@ -1,4 +1,4 @@
-* 0.0.3 (Jan 9, 2010) Lets stay up to date with josevalim's work
+* 0.1.0 (Jan 9, 2010) Lets stay up to date with josevalim's work
 * Renaming the warden_oauth/manager.rb to warden_oauth/config_extension.rb,
 given that the Warden::Manager is not the given instance on the
 Warden::Manager block anymore
