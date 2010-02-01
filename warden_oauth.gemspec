@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{warden_oauth}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Roman Gonzalez"]
-  s.date = %q{2010-01-09}
+  s.date = %q{2010-02-01}
   s.description = %q{ 
       warden_oauth will help you create oauth authentication strategies using the oauth
       helper method on the Warden::Manager config setup
