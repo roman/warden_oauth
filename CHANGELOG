@@ -1,4 +1,4 @@
-0.1.1 (Jan 31, 2010)
+0.1.1 (Feb 1, 2010)
 * Given the warden API was updated, the redirect! method would not work
 without invoking a throw(:warden) [contributor: eoin]
 
