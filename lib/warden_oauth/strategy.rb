@@ -44,7 +44,7 @@ module Warden
         if params.include?('warden_oauth_provider')
           store_request_token_on_session
           redirect!(request_token.authorize_url)
-
+          throw(:warden)
         elsif params.include?('oauth_token')
           load_request_token_from_session
           if missing_stored_token?
