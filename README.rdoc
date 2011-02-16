@@ -22,7 +22,7 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
     config.default_strategies(:twitter_oauth, :password, :other)
   end
   
-You then need to set the BASE_URL constant so that the oauth_callback will work:
+You then need to set the BASE_URL constant in your environment files so that the oauth_callback will work:
 
   BASE_URL = "http://localhost"
 
