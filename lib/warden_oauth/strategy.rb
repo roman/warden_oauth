@@ -43,7 +43,7 @@ module Warden
       def authenticate!
         if params.include?('warden_oauth_provider')
           store_request_token_on_session
-          redirect!(request_token.authorize_url)
+          redirect!(request_token.authorize_url(config.options))
           throw(:warden)
         elsif params.include?('oauth_token')
           load_request_token_from_session
@@ -78,8 +78,7 @@ module Warden
       end
 
       def request_token
-        host_with_port = Warden::OAuth::Utils.host_with_port(request)
-        @request_token ||= consumer.get_request_token(:oauth_callback => host_with_port)
+        @request_token ||= consumer.get_request_token(:oauth_callback => config.options[:oauth_callback])
       end
 
       def access_token
