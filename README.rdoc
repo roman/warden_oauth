@@ -13,10 +13,18 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
     config.oauth(:twitter) do |twitter|
       twitter.consumer_secret = <YOUR CONSUMER SECRET>
       twitter.consumer_key  = <YOUR CONSUMER KEY>
-      twitter.options :site => 'http://twitter.com'
+      twitter.options({ 
+        :site => 'http://twitter.com',
+        :oauth_callback => (BASE_URL.end_with?('/') ? BASE_URL[0..-2] : BASE_URL)  + '/users', 
+        :oauth_callback_confirmed => 'true' 
+      })
     end
     config.default_strategies(:twitter_oauth, :password, :other)
   end
+  
+You then need to set the BASE_URL constant so that the oauth_callback will work:
+
+BASE_URL = "http://localhost"
 
 == Giving an Access Token fetcher
 
