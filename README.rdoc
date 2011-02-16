@@ -24,7 +24,7 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
   
 You then need to set the BASE_URL constant so that the oauth_callback will work:
 
-BASE_URL = "http://localhost"
+  BASE_URL = "http://localhost"
 
 == Giving an Access Token fetcher
 
