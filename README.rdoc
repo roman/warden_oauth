@@ -13,10 +13,18 @@ oauth services you would like to have on the <tt>Warden::Manager</tt> middleware
     config.oauth(:twitter) do |twitter|
       twitter.consumer_secret = <YOUR CONSUMER SECRET>
       twitter.consumer_key  = <YOUR CONSUMER KEY>
-      twitter.options :site => 'http://twitter.com'
+      twitter.options({ 
+        :site => 'http://twitter.com',
+        :oauth_callback => (BASE_URL.end_with?('/') ? BASE_URL[0..-2] : BASE_URL)  + '/users', 
+        :oauth_callback_confirmed => 'true' 
+      })
     end
     config.default_strategies(:twitter_oauth, :password, :other)
   end
+  
+You then need to set the BASE_URL constant in your environment files so that the oauth_callback will work:
+
+  BASE_URL = "http://localhost"
 
 == Giving an Access Token fetcher
 
@@ -61,7 +69,34 @@ Note:
 
 In Rails, don't set the <tt>:warden_oauth_provider</tt> parameter as part of the login route, if you do this, rails will catch the parameter, but not the
 warden rack middleware, ergo, it won't work as expected.
+== Oauth 2.0
 
+To use oauth 2.0 it is very similar to standard oauth.  Here is my example for working with facebook
+  
+  
+  config.warden do |manager|
+    manager.oauth2(:facebook) do |fb|
+      fb.consumer_key  = FACEBOOK_CONSUMER_KEY
+      fb.consumer_secret = FACEBOOK_CONSUMER_SECRET
+      fb.client_id = FACEBOOK_CLIENT_ID
+      fb.options({
+        :authorize_url => 'https://www.facebook.com/dialog/oauth',
+        :access_token_url => 'https://graph.facebook.com/oauth/access_token',
+        :site => 'https://graph.facebook.com',
+        :scope => 'email,offline_access',
+        :redirect_uri => (BASE_URL.end_with?('/') ? BASE_URL[0..-2] : BASE_URL)  + '/users'
+      })
+    end
+    manager.default_strategies(:scope => :user).unshift :facebook_oauth
+  end
+  
+Note:  You still need to give an Access Token fetcher
+
+  Warden::OAuth2.access_token_user_finder(:facebook) do |access_token|
+  end
+  
+Note:  Instead of oauth the keyword oauth2 is used in both examples above
+  
 == Examples
 
 If you want to know how to make a twitter authentication client, check examples/twitter/application.rb

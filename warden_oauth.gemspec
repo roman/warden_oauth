@@ -36,6 +36,13 @@ Gem::Specification.new do |s|
      "lib/warden_oauth/strategy.rb",
      "lib/warden_oauth/strategy_builder.rb",
      "lib/warden_oauth/utils.rb",
+     "lib/warden_oauth2/base.rb",
+     "lib/warden_oauth2/config.rb",
+     "lib/warden_oauth2/config_extension.rb",
+     "lib/warden_oauth2/errors.rb",
+     "lib/warden_oauth2/strategy.rb",
+     "lib/warden_oauth2/strategy_builder.rb",
+     "lib/warden_oauth2/utils.rb",
      "spec/application_runner.rb",
      "spec/application_scenario.rb",
      "spec/fixtures/authorize_request_token.txt",
@@ -68,6 +75,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<warden>, [">= 0.8.1"])
       s.add_runtime_dependency(%q<oauth>, [">= 0"])
+      s.add_runtime_dependency(%q<oauth2>, [">= 0"])
       s.add_development_dependency(%q<rack-test>, [">= 0"])
       s.add_development_dependency(%q<fakeweb>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
